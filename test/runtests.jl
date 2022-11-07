@@ -1,4 +1,4 @@
-using CodecZlib
+using CodecZlibNG
 using Test
 import TranscodingStreams:
     TranscodingStreams,
@@ -13,15 +13,15 @@ const testdir = @__DIR__
 @testset "Gzip Codec" begin
     codec = GzipCompressor()
     @test codec isa GzipCompressor
-    @test occursin(r"^(CodecZlib\.)?GzipCompressor\(level=-1, windowbits=\d+\)$", sprint(show, codec))
-    @test CodecZlib.initialize(codec) === nothing
-    @test CodecZlib.finalize(codec) === nothing
+    @test occursin(r"^(CodecZlibNG\.)?GzipCompressor\(level=-1, windowbits=\d+\)$", sprint(show, codec))
+    @test CodecZlibNG.initialize(codec) === nothing
+    @test CodecZlibNG.finalize(codec) === nothing
 
     codec = GzipDecompressor()
     @test codec isa GzipDecompressor
-    @test occursin(r"^(CodecZlib\.)?GzipDecompressor\(windowbits=\d+\)$", sprint(show, codec))
-    @test CodecZlib.initialize(codec) === nothing
-    @test CodecZlib.finalize(codec) === nothing
+    @test occursin(r"^(CodecZlibNG\.)?GzipDecompressor\(windowbits=\d+\)$", sprint(show, codec))
+    @test CodecZlibNG.initialize(codec) === nothing
+    @test CodecZlibNG.finalize(codec) === nothing
 
     # `gzip.compress(b"foo")` in Python 3.6.2 (zlib 1.2.8).
     gzip_data = b"\x1f\x8b\x08\x00R\xcc\x10Y\x02\xffK\xcb\xcf\x07\x00!es\x8c\x03\x00\x00\x00"
@@ -115,15 +115,15 @@ end
 @testset "Zlib Codec" begin
     codec = ZlibCompressor()
     @test codec isa ZlibCompressor
-    @test occursin(r"^(CodecZlib\.)?ZlibCompressor\(level=-1, windowbits=\d+\)$", sprint(show, codec))
-    @test CodecZlib.initialize(codec) === nothing
-    @test CodecZlib.finalize(codec) === nothing
+    @test occursin(r"^(CodecZlibNG\.)?ZlibCompressor\(level=-1, windowbits=\d+\)$", sprint(show, codec))
+    @test CodecZlibNG.initialize(codec) === nothing
+    @test CodecZlibNG.finalize(codec) === nothing
 
     codec = ZlibDecompressor()
     @test codec isa ZlibDecompressor
-    @test occursin(r"^(CodecZlib\.)?ZlibDecompressor\(windowbits=\d+\)$", sprint(show, codec))
-    @test CodecZlib.initialize(codec) === nothing
-    @test CodecZlib.finalize(codec) === nothing
+    @test occursin(r"^(CodecZlibNG\.)?ZlibDecompressor\(windowbits=\d+\)$", sprint(show, codec))
+    @test CodecZlibNG.initialize(codec) === nothing
+    @test CodecZlibNG.finalize(codec) === nothing
 
     # `zlib.compress(b"foo")` in Python 3.6.2 (zlib 1.2.8).
     zlib_data = b"x\x9cK\xcb\xcf\x07\x00\x02\x82\x01E"
@@ -195,16 +195,16 @@ end
 @testset "Deflate Codec" begin
     codec = DeflateCompressor()
     @test codec isa DeflateCompressor
-    @test occursin(r"^(CodecZlib\.)?DeflateCompressor\(level=-1, windowbits=-\d+\)$", sprint(show, codec))
-    @test CodecZlib.initialize(codec) === nothing
+    @test occursin(r"^(CodecZlibNG\.)?DeflateCompressor\(level=-1, windowbits=-\d+\)$", sprint(show, codec))
+    @test CodecZlibNG.initialize(codec) === nothing
     # FIXME: This test fails.
-    #@test CodecZlib.finalize(codec) === nothing
+    #@test CodecZlibNG.finalize(codec) === nothing
 
     codec = DeflateDecompressor()
     @test codec isa DeflateDecompressor
-    @test occursin(r"^(CodecZlib\.)?DeflateDecompressor\(windowbits=-\d+\)$", sprint(show, codec))
-    @test CodecZlib.initialize(codec) === nothing
-    @test CodecZlib.finalize(codec) === nothing
+    @test occursin(r"^(CodecZlibNG\.)?DeflateDecompressor\(windowbits=-\d+\)$", sprint(show, codec))
+    @test CodecZlibNG.initialize(codec) === nothing
+    @test CodecZlibNG.finalize(codec) === nothing
 
     test_roundtrip_read(DeflateCompressorStream, DeflateDecompressorStream)
     test_roundtrip_write(DeflateCompressorStream, DeflateDecompressorStream)

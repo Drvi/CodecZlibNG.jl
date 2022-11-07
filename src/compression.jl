@@ -12,7 +12,7 @@ end
 # ----
 
 struct GzipCompressor <: CompressorCodec
-    zstream::ZStream
+    zstream::ZNGStream
     level::Int
     windowbits::Int
 end
@@ -34,7 +34,9 @@ function GzipCompressor(;level::Integer=Z_DEFAULT_COMPRESSION,
     elseif !(8 ≤ windowbits ≤ 15)
         throw(ArgumentError("windowbits must be within 8..15"))
     end
-    return GzipCompressor(ZStream(), level, windowbits+16)
+    # Add 16 to windowBits to write a simple gzip header and trailer around the
+    # compressed data instead of a zlib wrapper.
+    return GzipCompressor(ZNGStream(), level, windowbits+16)
 end
 
 const GzipCompressorStream{S} = TranscodingStream{GzipCompressor,S} where S<:IO
@@ -54,7 +56,7 @@ end
 # ----
 
 struct ZlibCompressor <: CompressorCodec
-    zstream::ZStream
+    zstream::ZNGStream
     level::Int
     windowbits::Int
 end
@@ -76,7 +78,7 @@ function ZlibCompressor(;level::Integer=Z_DEFAULT_COMPRESSION,
     elseif !(8 ≤ windowbits ≤ 15)
         throw(ArgumentError("windowbits must be within 8..15"))
     end
-    return ZlibCompressor(ZStream(), level, windowbits)
+    return ZlibCompressor(ZNGStream(), level, windowbits)
 end
 
 const ZlibCompressorStream{S} = TranscodingStream{ZlibCompressor,S} where S<:IO
@@ -96,9 +98,11 @@ end
 # -------
 
 struct DeflateCompressor <: CompressorCodec
-    zstream::ZStream
+    zstream::ZNGStream
     level::Int
     windowbits::Int
+    memlevel::Int
+    strategy::Int
 end
 
 """
@@ -110,15 +114,30 @@ Arguments
 ---------
 - `level`: compression level (-1..9)
 - `windowbits`: size of history buffer (8..15)
+- `memlevel`: memory size used for internal compression state (1..9)
+- `strategy`: compression strategy
+    * 0 <-> Z_DEFAULT_STRATEGY
+    * 1 <-> Z_FILTERED
+    * 2 <-> Z_HUFFMAN_ONLY
+    * 3 <-> Z_RLE
+    * 4 <-> Z_FIXED
 """
-function DeflateCompressor(;level::Integer=Z_DEFAULT_COMPRESSION,
-                        windowbits::Integer=Z_DEFAULT_WINDOWBITS)
+function DeflateCompressor(;
+    level::Integer=Z_DEFAULT_COMPRESSION,
+    windowbits::Integer=Z_DEFAULT_WINDOWBITS,
+    memlevel::Integer=Z_DEFAULT_MEMLEVEL,
+    strategy::Integer=Z_DEFAULT_STRATEGY,
+)
     if !(-1 ≤ level ≤ 9)
         throw(ArgumentError("compression level must be within -1..9"))
     elseif !(8 ≤ windowbits ≤ 15)
         throw(ArgumentError("windowbits must be within 8..15"))
+    elseif !(1 ≤ memlevel ≤ 9)
+        throw(ArgumentError("memlevel must be within 1..9"))
+    elseif !(0 ≤ strategy ≤ 4)
+        throw(ArgumentError("strategy must be within 0..4"))
     end
-    return DeflateCompressor(ZStream(), level, -Int(windowbits))
+    return DeflateCompressor(ZNGStream(), level, -Int(windowbits), memlevel, strategy)
 end
 
 const DeflateCompressorStream{S} = TranscodingStream{DeflateCompressor,S} where S<:IO

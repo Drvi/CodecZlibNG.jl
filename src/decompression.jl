@@ -12,7 +12,7 @@ end
 # ----
 
 struct GzipDecompressor <: DecompressorCodec
-    zstream::ZStream
+    zstream::ZNGStream
     windowbits::Int
 end
 
@@ -32,7 +32,7 @@ function GzipDecompressor(;windowbits::Integer=Z_DEFAULT_WINDOWBITS, gziponly::B
     if !(8 ≤ windowbits ≤ 15)
         throw(ArgumentError("windowbits must be within 8..15"))
     end
-    return GzipDecompressor(ZStream(), windowbits+(gziponly ? 16 : 32))
+    return GzipDecompressor(ZNGStream(), windowbits+(gziponly ? 16 : 32))
 end
 
 const GzipDecompressorStream{S} = TranscodingStream{GzipDecompressor,S} where S<:IO
@@ -52,7 +52,7 @@ end
 # ----
 
 struct ZlibDecompressor <: DecompressorCodec
-    zstream::ZStream
+    zstream::ZNGStream
     windowbits::Int
 end
 
@@ -69,7 +69,7 @@ function ZlibDecompressor(;windowbits::Integer=Z_DEFAULT_WINDOWBITS)
     if !(8 ≤ windowbits ≤ 15)
         throw(ArgumentError("windowbits must be within 8..15"))
     end
-    return ZlibDecompressor(ZStream(), windowbits)
+    return ZlibDecompressor(ZNGStream(), windowbits)
 end
 
 const ZlibDecompressorStream{S} = TranscodingStream{ZlibDecompressor,S} where S<:IO
@@ -89,7 +89,7 @@ end
 # -------
 
 struct DeflateDecompressor <: DecompressorCodec
-    zstream::ZStream
+    zstream::ZNGStream
     windowbits::Int
 end
 
@@ -106,7 +106,7 @@ function DeflateDecompressor(;windowbits::Integer=Z_DEFAULT_WINDOWBITS)
     if !(8 ≤ windowbits ≤ 15)
         throw(ArgumentError("windowbits must be within 8..15"))
     end
-    return DeflateDecompressor(ZStream(), -Int(windowbits))
+    return DeflateDecompressor(ZNGStream(), -Int(windowbits))
 end
 
 const DeflateDecompressorStream{S} = TranscodingStream{DeflateDecompressor,S} where S<:IO

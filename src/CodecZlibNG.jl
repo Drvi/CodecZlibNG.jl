@@ -1,4 +1,4 @@
-module CodecZlib
+module CodecZlibNG
 
 export
     # gzip
@@ -27,9 +27,9 @@ import TranscodingStreams:
     initialize,
     finalize,
     splitkwargs
-using Zlib_jll
+using ZlibNG_jll
 
-include("libz.jl")
+include("libzng.jl")
 include("compression.jl")
 include("decompression.jl")
 
