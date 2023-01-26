@@ -1,4 +1,4 @@
-The CodecZlib.jl package is licensed under the MIT "Expat" License:
+The CodecZlibNG.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2017: Kenta Sato.
 > Copyright (c) 2022: RelationalAI, Tomáš Drvoštěp, and contributors
