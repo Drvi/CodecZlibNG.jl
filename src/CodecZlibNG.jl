@@ -28,7 +28,7 @@ import TranscodingStreams:
     finalize,
     splitkwargs
 # using ZlibNG_jll
-const libzng = "/Users/jacob.quinn/aws-crt/lib/"
+const libzng = "/Users/jacob.quinn/aws-crt/lib/libz-ng.so"
 
 include("libzng.jl")
 include("compression.jl")
